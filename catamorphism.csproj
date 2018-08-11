@@ -83,13 +83,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model.cs" />
-    <Compile Include="UIhelpers.cs" />
-    <Page Include="Controls.CheckBox.xaml">
+    <Compile Include="Model\MiniList.cs" />
+    <Compile Include="Model\PageData.cs" />
+    <Compile Include="ViewModel\ViewModel.cs" />
+    <Compile Include="Model\Func.cs" />
+    <Page Include="View\Controls.CheckBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -97,7 +99,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
