@@ -17,6 +17,8 @@ namespace catamorphism
         public string _created;
         private int? _strength;//cannot determine until decrypted
         private bool? _blacklist;//tristate
+        private string _otp;
+        private int _otptime;
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -107,6 +109,17 @@ namespace catamorphism
             {
                 _blacklist = value;
             }
+        }
+        public string OTP
+        {
+            get { return _otp; }
+            set { this._otp = value; OnPropertyChanged(new PropertyChangedEventArgs("OTP")); }
+        }
+        public int OTPTime
+        {
+            get { return _otptime; }
+            set { this._otptime = Math.Min(100, (int)(value * 3.4)) ; //30 = 100%
+                OnPropertyChanged(new PropertyChangedEventArgs("OTPTime")); }
         }
     }
 }

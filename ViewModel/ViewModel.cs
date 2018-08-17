@@ -30,6 +30,8 @@ namespace catamorphism
             //pd.Password = "aaa123Daeg*^#";
             pd._email = "use@mail";
             pd._created = "01:01:2000";
+            pd.OTP = "000 000";
+            pd.OTPTime = 10;//10sec left
 
             savedpasswords = new List<MiniList>();
             MiniList item = new MiniList();
