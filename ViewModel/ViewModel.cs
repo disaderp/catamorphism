@@ -7,13 +7,16 @@ using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.ComponentModel;
+using MahApps.Metro.Controls.Dialogs;
+using System.Windows;
+using MahApps.Metro.Controls;
 
 namespace catamorphism
 {
     class ViewModel : INotifyPropertyChanged
     {
-        public List<MiniList> savedpasswords;
-        public PageData pd;
+		private ViewWebsiteData pd;
+		private Model.Vault vault;
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -22,31 +25,31 @@ namespace catamorphism
                 PropertyChanged(this, e);
             }
         }
+		public void Load(int index)
+		{
+			if ( index == -1 )
+			{//unload
+				pd = null;
+				OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+				return;
+			}
+			pd = vault.getViewWebsiteData(index);
+			pd.Refresh(); //TODO: check if parent property changed is enough
+			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+		}
         public ViewModel()
         {
-            pd = new PageData();
-            pd._website = "http://webtesT.com";
-            pd._user = "useeer";
-            //pd.Password = "aaa123Daeg*^#";
-            pd._email = "use@mail";
-            pd._created = "01:01:2000";
-            pd.OTP = "000 000";
-            pd.OTPTime = 10;//10sec left
-
-            savedpasswords = new List<MiniList>();
-            MiniList item = new MiniList();
-            item._login = "Test";
-            item._shortwebpagename = "Short";
-            item._icon = new BitmapImage(new Uri("C:\\Users\\Karol\\Documents\\Visual Studio 2013\\Projects\\DTun\\_0.ico"));
-            savedpasswords.Add(item);
+			//TODO: ask for password
+			vault = new Model.Vault("");
         }
-        public PageData Page
+
+		public ViewWebsiteData Page
         {
             get { return pd; }
         }
         public List<MiniList> SavedList
         {
-            get { return savedpasswords; }
+            get { return vault.getMiniList(); }
         }
     }
 }

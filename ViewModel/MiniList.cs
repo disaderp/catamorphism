@@ -23,6 +23,13 @@ namespace catamorphism
             }
         }
 
+		public MiniList(BitmapImage icon, string shortPage, string login)
+		{
+			_icon = icon;
+			_shortwebpagename = shortPage;
+			_login = login;
+		}
+
         public BitmapImage Icon
         {
             get { return _icon; }

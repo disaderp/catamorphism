@@ -32,9 +32,6 @@ namespace catamorphism
             progressbar2.Visibility = Visibility.Hidden;
             checkBox1.Visibility = Visibility.Hidden;
             checkBox2.Visibility = Visibility.Hidden;
-
-			Model.Vault v = new Model.Vault();
-			v.Serialize();
         }
 
         private void listBox1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -45,12 +42,7 @@ namespace catamorphism
                 checkBox1.Visibility = Visibility.Visible;
                 checkBox2.Visibility = Visibility.Visible;
 
-                vm.pd = new catamorphism.PageData();
-                vm.pd._user = "USER!!";
-                vm.pd.Password = "abc";
-                vm.pd.Blacklisted = true;
-                vm.pd.OTPTime = 5;
-                vm.OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+				vm.Load(listBox1.SelectedIndex);
             }
             else
             {
@@ -58,8 +50,8 @@ namespace catamorphism
                 progressbar2.Visibility = Visibility.Hidden;
                 checkBox1.Visibility = Visibility.Hidden;
                 checkBox2.Visibility = Visibility.Hidden;
-                vm.pd = null;
-                vm.OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+
+				vm.Load(-1); //-1 = unload
             }
         }
     }

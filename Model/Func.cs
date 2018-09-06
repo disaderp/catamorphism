@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace catamorphism
 {
-    static class UIHelper
+    static class Func
     {
         public static int CheckStrength(string password)//https://stackoverflow.com/a/10966297
         {
@@ -88,6 +88,11 @@ namespace catamorphism
             }
             return score;
         }
+
+		public static bool BreachTest()
+		{
+			throw new NotImplementedException();
+		}
 
     }
 
