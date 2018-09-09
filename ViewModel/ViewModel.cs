@@ -10,12 +10,14 @@ using System.ComponentModel;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using MahApps.Metro.Controls;
+using System.Windows.Data;
 
 namespace catamorphism
 {
     class ViewModel : INotifyPropertyChanged
     {
 		private ViewWebsiteData pd;
+		private List<MiniList> mini;
 		private Model.Vault vault;
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -37,11 +39,15 @@ namespace catamorphism
 			pd.Refresh(); //TODO: check if parent property changed is enough
 			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
 		}
-        public ViewModel()
+        public ViewModel(string pass)
         {
-			//TODO: ask for password
-			vault = new Model.Vault("");
-        }
+			vault = new Model.Vault(pass);
+			mini = vault.getMiniList();
+			//CollectionView view = CollectionViewSource.GetDefaultView(SavedList);
+			//view.Refresh();
+			//((MainWindow)Application.Current.MainWindow).listBox1.ItemsSource = "{ Binding SavedList }";
+			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+		}
 
 		public ViewWebsiteData Page
         {
@@ -49,7 +55,11 @@ namespace catamorphism
         }
         public List<MiniList> SavedList
         {
-            get { return vault.getMiniList(); }
+            get { return mini; }
         }
+		public void Save()
+		{
+			vault.Serialize();
+		}
     }
 }

@@ -15,14 +15,14 @@ namespace catamorphism.Model
         public string email;
         public string password;
         public string creationDate;
-		public BitmapImage icon;
+		public string icon;
 
 		public string otpSecret;
         public OtpNet.OtpHashMode mode = OtpNet.OtpHashMode.Sha1;
         public int otpStep = 30;
         public int otpSize = 6;
 
-		public WebsiteData(string _webn, string _usern, string _email, string _password, string _date, BitmapImage _icon, string _otpSecret, OtpNet.OtpHashMode _mode, int _step, int _size)
+		public WebsiteData(string _webn, string _usern, string _email, string _password, string _date, string _icon, string _otpSecret, OtpNet.OtpHashMode _mode, int _step, int _size)
 		{
 			webname = _webn;
 			username = _usern;

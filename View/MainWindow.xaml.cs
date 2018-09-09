@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace catamorphism
 {
@@ -22,17 +23,24 @@ namespace catamorphism
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        ViewModel vm = new ViewModel();
+		ViewModel vm;
         public MainWindow()
         {
-            DataContext = vm;
-
+            //DataContext = vm;
             InitializeComponent();
-            progressbar1.Visibility = Visibility.Hidden;
+
+			showPasswordDialogAsync();
+
+			progressbar1.Visibility = Visibility.Hidden;
             progressbar2.Visibility = Visibility.Hidden;
             checkBox1.Visibility = Visibility.Hidden;
             checkBox2.Visibility = Visibility.Hidden;
-        }
+
+		}
+		public void vmCallback()
+		{
+			DataContext = vm;
+		}
 
         private void listBox1_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -53,6 +61,33 @@ namespace catamorphism
 
 				vm.Load(-1); //-1 = unload
             }
-        }
-    }
+			Console.WriteLine(listBox1.Items.Count.ToString());
+		}
+		public async void showDialog(string title, string text, bool critical)
+		{
+			await this.ShowMessageAsync(title, text);
+			if (critical)
+			{
+				Environment.Exit(1);
+			}
+		}
+		public async void showPasswordDialogAsync()
+		{
+			//Task<LoginDialogData> t;
+			LoginDialogData t = await this.ShowLoginAsync("Authentication", "Enter your credentials", new LoginDialogSettings { ColorScheme = MetroDialogOptions.ColorScheme, InitialUsername = "catamorphism" });
+			if (t == null)
+			{
+				showPasswordDialogAsync();
+			}
+			else
+			{
+				vm = new ViewModel(t.Password);
+			}
+		}
+
+		private void MetroWindow_Closing(object sender, CancelEventArgs e)
+		{
+			vm.Save();
+		}
+	}
 }

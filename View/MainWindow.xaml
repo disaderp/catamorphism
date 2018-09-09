@@ -4,7 +4,7 @@
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:View="clr-namespace:catamorphism.View" x:Class="catamorphism.MainWindow"
                       GlowBrush="{DynamicResource AccentColorBrush}"
-    Title="password" Height="568.85" Width="834.1" ResizeMode="CanMinimize"             >
+    Title="password" Height="568.85" Width="834.1" ResizeMode="CanMinimize" Closing="MetroWindow_Closing"             >
 
 
 
@@ -18,7 +18,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0" Height="50" Width="175">
-                        <Image x:Name="image" HorizontalAlignment="Left" Height="32" Margin="10,10,0,0" VerticalAlignment="Top" Width="32"  Source="{Binding Icon}"/>
+                        <Image x:Name="image" HorizontalAlignment="Left" Height="32" Margin="10,10,0,0" VerticalAlignment="Top" Width="32" Source="{Binding Icon}" />
                         <Label x:Name="label" Content="{Binding ShortName}" HorizontalAlignment="Left" Margin="47,8,0,0" VerticalAlignment="Top" Width="123" FontWeight="Bold" FontSize="9"/>
                         <Label x:Name="label1" Content="{Binding Login}" HorizontalAlignment="Left" Margin="47,23,0,0" VerticalAlignment="Top"  Width="123" FontSize="8"/>
                     </Grid>

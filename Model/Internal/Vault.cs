@@ -7,13 +7,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 
 namespace catamorphism.Model
 {
     class Vault
     {
-		private List<WebsiteData> passData;//TODO: in-memory data protection
+		private List<WebsiteData> passData = new List<WebsiteData>();//TODO: in-memory data protection //TODO remove new
 		private string password;//TODO: in-memory data protection
 
 		public Vault(string pass)
@@ -23,49 +24,61 @@ namespace catamorphism.Model
 		}
         public void Serialize()
         {
+			WebsiteData tmp = new WebsiteData("www.", "disa", "@mail", "pass", "today", null, "JBSWY3DPEHPK3PXP", OtpNet.OtpHashMode.Sha1, 30, 6);
+			//passData.Add(tmp);
+
             IFormatter formatter = new BinaryFormatter();
 			MemoryStream stream = new MemoryStream();
             formatter.Serialize(stream, passData);
 			stream.Position = 0;
-			StreamReader sr = new StreamReader(stream);
 		
-			string encrypted = Cryptography.Encrypt<RijndaelManaged>(sr.ReadToEnd(), password);
-			sr.Dispose();
+			string encrypted = Cryptography.Encrypt<RijndaelManaged>(Convert.ToBase64String(stream.ToArray()), password);
 			stream.Dispose();
-			File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "catamorphism/vault.bin"), encrypted);
+
+			Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/catamorphism"));
+			File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/catamorphism/vault.bin"), encrypted);
 		}
 		public void Load()
 		{
-			if(! File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "catamorphism/vault.bin")))
+			if(! File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/catamorphism/vault.bin")))
 			{
 				passData = new List<WebsiteData>();//no data
 				return;
 			}
 
 			IFormatter formatter = new BinaryFormatter();
-			string encrypted = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "catamorphism/vault.bin"));
+			string encrypted = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/catamorphism/vault.bin"));
 			string decrypted = Cryptography.Decrypt<RijndaelManaged>(encrypted, password);
+			
+			if (decrypted == string.Empty)
+			{
+				((MainWindow)Application.Current.MainWindow).showDialog("Error", "Wrong password", true);
+				return;
+			}
 
-			MemoryStream stream = new MemoryStream();
-			StreamWriter sr = new StreamWriter(stream);
-			sr.Write(decrypted);
-			sr.Flush();
-			sr.Dispose();
+			byte[] bytes = Convert.FromBase64String(decrypted);
+			MemoryStream stream = new MemoryStream(bytes, 0, bytes.Length);
+			stream.Write(bytes, 0, bytes.Length);
+			stream.Position = 0;
 
 			passData = (List<WebsiteData>)formatter.Deserialize(stream);
 
 			stream.Dispose();
+
+			((MainWindow)Application.Current.MainWindow).vmCallback();//warning: no effect
 		}
 		public ViewWebsiteData getViewWebsiteData(int index)
 		{
-			ViewWebsiteData wd = new ViewWebsiteData();
-			wd.WebName = passData.ElementAt(index).webname;
-			wd.User = passData.ElementAt(index).username;
-			wd.Password = passData.ElementAt(index).password;
-			wd.EMail = passData.ElementAt(index).email;
-			wd.Created = passData.ElementAt(index).creationDate;
+			ViewWebsiteData wd = new ViewWebsiteData
+			{
+				WebName = passData.ElementAt(index).webname,
+				User = passData.ElementAt(index).username,
+				Password = passData.ElementAt(index).password,
+				EMail = passData.ElementAt(index).email,
+				Created = passData.ElementAt(index).creationDate,
 
-			wd.Generator = passData.ElementAt(index).OTP();
+				Generator = passData.ElementAt(index).OTP()
+			};
 
 			return wd;
 		}
@@ -75,6 +88,7 @@ namespace catamorphism.Model
 			foreach (WebsiteData wd in passData)
 			{
 				MiniList ml = new MiniList(wd.icon, wd.webname, wd.username);
+				list.Add(ml);
 			}
 			return list;
 		}
