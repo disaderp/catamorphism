@@ -36,11 +36,13 @@ namespace catamorphism.Model
 			otpStep = _step;
 			otpSize = _size;
 		}
-        public OtpNet.Totp OTP()
-        {
-			OtpNet.Totp otpGenerator = new OtpNet.Totp(Base32.FromBase32String(otpSecret), otpStep, mode, otpSize);
-            return otpGenerator;
-        }
-    }
+		public OtpNet.Totp OTP()
+		{
+			if (otpSecret == "") {
+				return null;
+			}
+			return new OtpNet.Totp(Base32.FromBase32String(otpSecret), otpStep, mode, otpSize);
+		}
+	}
     
 }

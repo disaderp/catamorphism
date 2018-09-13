@@ -30,15 +30,12 @@ namespace catamorphism
 
         public ViewWebsiteData()
         {
-			Refresh();
+			
         }
 
-		public void Refresh()
-		{
-			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
-		}
+		public void Refresh() => OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
 
-        public string WebName
+		public string WebName
         {
             get { return _website; }
 			set { _website = value; }
@@ -111,16 +108,30 @@ namespace catamorphism
 		public bool? Blacklisted { get; set; }
 		public OtpNet.Totp Generator
 		{
-			set { this.otpGenerator = value; }
+			set { otpGenerator = value; }
 		}
-		public string OTP
-        {
-            get { return otpGenerator.ComputeTotp(); }
-        }
 
-        public int OTPTime
+		public string OTP
+		{
+			get
+			{
+				if (otpGenerator == null)
+				{
+					return "";
+				}
+				return otpGenerator.ComputeTotp();
+			}
+		}
+
+		public int OTPTime
         {
-			get { return Math.Min(100, (int)(otpGenerator.RemainingSeconds() * 3.4)); } //30 = 100% 
+			get {
+				if (otpGenerator == null)
+				{
+					return 0;
+				}
+				return Math.Min(100, (int)(otpGenerator.RemainingSeconds() * 3.4));//30 = 100% 
+			} 
         }
     }
 }

@@ -26,7 +26,6 @@ namespace catamorphism
 		ViewModel vm;
         public MainWindow()
         {
-            //DataContext = vm;
             InitializeComponent();
 
 			showPasswordDialogAsync();
@@ -35,11 +34,6 @@ namespace catamorphism
             progressbar2.Visibility = Visibility.Hidden;
             checkBox1.Visibility = Visibility.Hidden;
             checkBox2.Visibility = Visibility.Hidden;
-
-		}
-		public void vmCallback()
-		{
-			DataContext = vm;
 		}
 
         private void listBox1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -61,7 +55,6 @@ namespace catamorphism
 
 				vm.Load(-1); //-1 = unload
             }
-			Console.WriteLine(listBox1.Items.Count.ToString());
 		}
 		public async void showDialog(string title, string text, bool critical)
 		{
@@ -73,7 +66,6 @@ namespace catamorphism
 		}
 		public async void showPasswordDialogAsync()
 		{
-			//Task<LoginDialogData> t;
 			LoginDialogData t = await this.ShowLoginAsync("Authentication", "Enter your credentials", new LoginDialogSettings { ColorScheme = MetroDialogOptions.ColorScheme, InitialUsername = "catamorphism" });
 			if (t == null)
 			{
@@ -82,6 +74,7 @@ namespace catamorphism
 			else
 			{
 				vm = new ViewModel(t.Password);
+				DataContext = vm;
 			}
 		}
 

@@ -11,6 +11,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using MahApps.Metro.Controls;
 using System.Windows.Data;
+using System.Timers;
 
 namespace catamorphism
 {
@@ -19,7 +20,9 @@ namespace catamorphism
 		private ViewWebsiteData pd;
 		private List<MiniList> mini;
 		private Model.Vault vault;
-        public event PropertyChangedEventHandler PropertyChanged;
+		private Timer otpTimer;
+
+		public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (PropertyChanged != null)
@@ -31,21 +34,25 @@ namespace catamorphism
 		{
 			if ( index == -1 )
 			{//unload
+				otpTimer.Stop();
 				pd = null;
 				OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
 				return;
 			}
 			pd = vault.getViewWebsiteData(index);
-			pd.Refresh(); //TODO: check if parent property changed is enough
+			if (pd.OTP != "")
+			{
+				otpTimer = new Timer();
+				otpTimer.Elapsed += new ElapsedEventHandler(OTPRefresh);
+				otpTimer.Interval = 1000;
+				otpTimer.Start();
+			}
 			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
 		}
         public ViewModel(string pass)
         {
 			vault = new Model.Vault(pass);
 			mini = vault.getMiniList();
-			//CollectionView view = CollectionViewSource.GetDefaultView(SavedList);
-			//view.Refresh();
-			//((MainWindow)Application.Current.MainWindow).listBox1.ItemsSource = "{ Binding SavedList }";
 			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
 		}
 
@@ -61,5 +68,15 @@ namespace catamorphism
 		{
 			vault.Serialize();
 		}
-    }
+		public void OTPRefresh(object source, ElapsedEventArgs e)
+		{
+			pd.Refresh();
+		}
+		public async void BreachTest()
+		{
+			List<Dictionary<string, object>> breach = Func.BreachTest(pd.EMail);
+
+		}
+
+	}
 }

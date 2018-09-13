@@ -62,10 +62,8 @@ namespace catamorphism.Model
 			stream.Position = 0;
 
 			passData = (List<WebsiteData>)formatter.Deserialize(stream);
-
+			//passData.ElementAt(0).email = "test@example.com"; //debug for breachtest
 			stream.Dispose();
-
-			((MainWindow)Application.Current.MainWindow).vmCallback();//warning: no effect
 		}
 		public ViewWebsiteData getViewWebsiteData(int index)
 		{
@@ -81,6 +79,10 @@ namespace catamorphism.Model
 			};
 
 			return wd;
+		}
+		public string getPass(int index)
+		{
+			return passData.ElementAt(index).password;
 		}
 		public List<MiniList> getMiniList()
 		{
