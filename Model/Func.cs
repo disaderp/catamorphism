@@ -95,12 +95,13 @@ namespace catamorphism
 		public static List<Dictionary<string, object>> BreachTest(string account)
 		{
 			//wait for 1,5 sec
-			System.Threading.Thread.Sleep(1600);
+			System.Threading.Thread.Sleep(2000);
 			string json;
 
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://haveibeenpwned.com/api/v2/breachedaccount/" + account);
 			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			request.UserAgent = "catamorphism-password-manager";
+			request.Timeout = 1000;
 			//apply patch.reg
 
 			HttpWebResponse response = null;
@@ -138,14 +139,21 @@ namespace catamorphism
 		public static bool passLeak(string pass)
 		{
 			//wait for 1,5 sec
-			System.Threading.Thread.Sleep(1600);
+			System.Threading.Thread.Sleep(2000);
 
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.pwnedpasswords.com/range/" + GetSHA1Hash(pass).Substring(0, 5));
 			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			request.UserAgent = "catamorphism-password-manager";
+			request.Timeout = 1000;
 			//apply patch.reg
-
-			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+			HttpWebResponse response;
+			try
+			{
+				response = (HttpWebResponse)request.GetResponse();
+			} catch
+			{
+				return true;//false positive
+			}
 			Stream stream = response.GetResponseStream();
 			StreamReader reader = new StreamReader(stream);
 

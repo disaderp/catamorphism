@@ -21,6 +21,7 @@ namespace catamorphism
 		private List<MiniList> mini;
 		private Model.Vault vault;
 		private Timer otpTimer;
+		private System.Threading.Thread blkThread;
 
 		public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -47,6 +48,10 @@ namespace catamorphism
 				otpTimer.Interval = 1000;
 				otpTimer.Start();
 			}
+			blkThread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(BreachTest));
+			blkThread.IsBackground = true;
+			blkThread.Start(index);
+
 			OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
 		}
         public ViewModel(string pass)
@@ -72,10 +77,18 @@ namespace catamorphism
 		{
 			pd.Refresh();
 		}
-		public async void BreachTest()
+		public void BreachTest(object index)
 		{
+			if (Func.passLeak(vault.getPass((int)index)))
+			{
+				pd.Blacklisted = true; //pass leak
+			}
 			List<Dictionary<string, object>> breach = Func.BreachTest(pd.EMail);
-
+			if(breach[0].ContainsKey("Leaked"))//not leaked
+			{
+				pd.Blacklisted = false; 
+			}
+			pd.Blacklisted = true; //account leak
 		}
 
 	}
